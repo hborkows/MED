@@ -1,10 +1,8 @@
 class Item:
-    def __init__(self, name):
+    def __init__(self, name, parent):
         self.name = name
-        self._children = []
+        self.parent = parent
+        self.children = []
 
     def add_child(self, child):
-        self._children.append(child)
-
-    def get_children(self):
-        return self._children
+        self.children.append(child)
