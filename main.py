@@ -1,4 +1,4 @@
-from apriori.apriori import apriori_ar
+from basic.basic import basic_ar
 from utils.taxonomy import Taxonomy
 from utils.item import Item
 from typing import Callable, Set
@@ -11,7 +11,7 @@ def get_association_rules(_algorithm: Callable, _dataset: Set, _taxonomy: Taxono
 
 # Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    algorithms = [apriori_ar]
+    algorithms = [basic_ar]
     dataset = set()
     taxonomy = Taxonomy()
 
