@@ -1,5 +1,4 @@
 from utils.item import Item
-import pickle
 
 
 def find_node_r(node: Item, name: str):
@@ -25,13 +24,3 @@ class Taxonomy:
     def add_node(self, node: Item, parent_name: str):
         parent = self.find_node(parent_name)
         parent.add_child(node)
-
-
-def save_taxonomy(taxonomy: Taxonomy, path: str):
-    with open(path, 'wb') as file:
-        pickle.dump(taxonomy, file)
-
-
-def load_taxonomy(path: str):
-    with open(path, 'rb') as file:
-        return pickle.load(file)
