@@ -11,7 +11,7 @@ class HashTree:
         self._itemset_size = itemset_size
         self._leaf_capacity = leaf_capacity
 
-    def insert_r(self, node: Node, itemset: tuple, index: int, count: int):
+    def _insert_r(self, node: Node, itemset: tuple, index: int, count: int):
         # last bucket
         if index == len(itemset):
             if itemset in node.bucket:
@@ -33,7 +33,7 @@ class HashTree:
                     hash_key = self.hash_value(old_itemset[index])
                     if hash_key not in node.children:
                         node.children[hash_key] = Node()
-                    self.insert_r(node.children[hash_key], old_itemset, index + 1, old_count)
+                    self._insert_r(node.children[hash_key], old_itemset, index + 1, old_count)
 
                 del node.bucket
                 node.is_leaf = False
@@ -42,11 +42,11 @@ class HashTree:
             hash_key = self.hash_value(itemset[index])
             if hash_key not in node.children:
                 node.children[hash_key] = Node()
-            self.insert_r(node.children[hash_key], itemset, index + 1, count)
+            self._insert_r(node.children[hash_key], itemset, index + 1, count)
 
     def insert(self, itemset):
         itemset = tuple(itemset)
-        self.insert_r(self._root, itemset, 0, 0)
+        self._insert_r(self._root, itemset, 0, 0)
 
     def hash_value(self, value):
         return value % self._leaf_capacity
