@@ -1,6 +1,6 @@
 class Node:
     def __init__(self):
-        self.children = []
+        self.children = {}
         self.is_leaf = True
         self.bucket = {}
 
@@ -31,7 +31,7 @@ class HashTree:
             if len(node.bucket) >= self._leaf_capacity:
                 for old_itemset, old_count in node.bucket.items():
                     hash_key = self.hash_value(old_itemset[index])
-                    if hash_key not in node.children:
+                    if hash_key not in node.children.keys():
                         node.children[hash_key] = Node()
                     self._insert_r(node.children[hash_key], old_itemset, index + 1, old_count)
 
@@ -40,7 +40,7 @@ class HashTree:
         # non-leaf node -> continue to appropriate leaf node using hash_key
         else:
             hash_key = self.hash_value(itemset[index])
-            if hash_key not in node.children:
+            if hash_key not in node.children.keys():
                 node.children[hash_key] = Node()
             self._insert_r(node.children[hash_key], itemset, index + 1, count)
 
@@ -50,3 +50,33 @@ class HashTree:
 
     def hash_value(self, value):
         return value % self._leaf_capacity
+
+    def add_support(self, itemset):
+        current_node = self._root
+        index = 0
+        while True:
+            if current_node.is_leaf:
+                if itemset in current_node.bucket:
+                    current_node.bucket[itemset] += 1
+                break
+            hash_key = self.hash_value(itemset[index])
+            if hash_key in current_node.children.keys():
+                current_node = current_node.children[hash_key]
+            else:
+                break
+            index += 1
+
+    def _dfs(self, node: Node, min_sup: int):
+        if node.is_leaf:
+            for key, value in node.bucket.items():
+                if value >= min_sup:
+                    return key, value
+        else:
+            result = []
+            for child in node.children.keys():
+                result.append(self._dfs(child, min_sup))
+            return result
+
+    def get_frequent_itemsets(self, min_sup: int):
+        return self._dfs(self._root, min_sup)
+
