@@ -7,3 +7,6 @@ class Item:
 
     def add_child(self, child):
         self.children.append(child)
+
+    def print(self, indent: str):
+        print(indent + str(self.node_id))

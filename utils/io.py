@@ -77,4 +77,6 @@ def read_taxonomy(path: str, items: dict) -> Taxonomy:
 
 
 if __name__ == '__main__':
-    print(read_item_list('../data/fruithut_original.txt'))
+    #print(read_item_list('../data/fruithut_original.txt'))
+    taxonomy = read_taxonomy('../data/taxonomy_test.txt', items={})
+    taxonomy.print()

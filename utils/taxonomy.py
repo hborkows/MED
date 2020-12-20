@@ -39,3 +39,12 @@ class Taxonomy:
 
     def get_ancestors(self, node: Item):
         return get_ancestors_r(node.parent)
+
+    def _print_r(self, node: Item, indent: str):
+        node.print(indent)
+        indent = indent + '  '
+        for child in node.children:
+            self._print_r(child, indent)
+
+    def print(self):
+        self._print_r(self._root, indent='')
