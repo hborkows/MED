@@ -8,7 +8,7 @@ def get_frequent_1_set(transactions: List, min_sup: float):
     candidate_1_set = {}
     for transaction in transactions:
         for item in transaction:
-            if item in candidate_1_set:
+            if item.node_id in candidate_1_set:
                 candidate_1_set[item] += 1
             else:
                 candidate_1_set[item] = 1
@@ -70,7 +70,15 @@ def frequent_itemsets_apriori(transactions: List, min_sup: float):
 
 
 def basic_ar(transactions: List, taxonomy: Taxonomy, min_interest: float, min_sup: float, min_conf: float):
-    freq_itemsets = frequent_itemsets_apriori(transactions, min_sup)
+    # Add ancestors from taxonomy to transactions
+    transactions_w_ancestors = []
+    for transaction in transactions:
+        for item in transaction:
+            transaction.extend(taxonomy.get_ancestors(item))
+        new_transaction = list(set([item.node_id for item in transaction]))
+        transactions_w_ancestors.append(new_transaction)
+
+    freq_itemsets = frequent_itemsets_apriori(transactions_w_ancestors, min_sup)
     hash_map = {}
     for itemset in freq_itemsets:
         hash_map[tuple(itemset[0])] = itemset[1]
@@ -81,7 +89,7 @@ def basic_ar(transactions: List, taxonomy: Taxonomy, min_interest: float, min_su
             continue
 
         union_support = hash_map[tuple(itemset[0])]
-        for i in range(1,len(itemset[0])):
+        for i in range(1, len(itemset[0])):
             lefts = map(list, combinations(itemset[0], i))
             for left in lefts:
                 conf = 100.0 * union_support / hash_map[tuple(left)]
