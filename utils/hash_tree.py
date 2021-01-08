@@ -66,7 +66,7 @@ class HashTree:
                 break
             index += 1
 
-    def _dfs(self, node: Node, min_sup: int):
+    def _dfs(self, node: Node, min_sup: float):
         if node.is_leaf:
             for key, value in node.bucket.items():
                 if value >= min_sup:
@@ -77,6 +77,6 @@ class HashTree:
                 result.append(self._dfs(child, min_sup))
             return result
 
-    def get_frequent_itemsets(self, min_sup: int):
+    def get_frequent_itemsets(self, min_sup: float):
         return self._dfs(self._root, min_sup)
 
