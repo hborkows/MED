@@ -1,7 +1,7 @@
 from utils.item import Item
 
 
-def find_node_r(node: Item, node_id: str):
+def find_node_r(node: Item, node_id: int):
     if node.node_id == node_id:
         return node
     elif node.children:
@@ -27,12 +27,12 @@ def get_ancestors_r(node: Item):
 
 class Taxonomy:
     def __init__(self):
-        self._root: Item = Item(node_id='__root__', parent=None)
+        self._root: Item = Item(node_id=-1, parent=None)
 
-    def find_node(self, node_id: str):
+    def find_node(self, node_id: int):
         return find_node_r(self._root, node_id)
 
-    def add_node(self, node_id: str, parent_id: str, node_description: str = ''):
+    def add_node(self, node_id: int, parent_id: int, node_description: str = ''):
         parent = self.find_node(parent_id)
         node = Item(node_id=node_id, parent=parent, desc=node_description)
         parent.add_child(node)

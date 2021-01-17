@@ -64,7 +64,7 @@ def read_taxonomy(path: str, items: dict) -> Taxonomy:
 
     # Generate top level taxonomy nodes
     top_parents = parents - children
-    parent_id = '__root__'
+    parent_id = -1
     for parent in top_parents:
         try:
             description = items[parent]
@@ -78,6 +78,5 @@ def read_taxonomy(path: str, items: dict) -> Taxonomy:
 
 
 if __name__ == '__main__':
-    #print(read_item_list('../data/fruithut_original.txt'))
     taxonomy = read_taxonomy('../data/taxonomy_test.txt', items={})
     taxonomy.print()
