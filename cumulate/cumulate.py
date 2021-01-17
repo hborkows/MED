@@ -19,10 +19,15 @@ def frequent_itemsets_apriori_cumulate(transactions: List, min_sup: float):
                 candidates.append(prev_freqent[i][:-1] + [prev_freqent[i][-1]] + [prev_freqent[j][-1]])
                 j += 1
 
-        # Optimization 3
+        # Optimization 3 -> remove pairs of [item ancestor]
         if length == 2:
+            tmp_candidates = []
             for candidate in candidates:
-                pass
+                item_1 = candidate[0]
+                item_2 = candidate[1]
+                if item_1 not in item_ancestors[item_2] and item_2 not in item_ancestors[item_1]:
+                    tmp_candidates.append(candidate)
+            candidates = tmp_candidates
 
         tree = generate_hash_tree(candidate_itemsets=candidates, length=length)
         k_subsets = generate_k_subsets(transactions=transactions, length=length)
