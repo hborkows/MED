@@ -11,30 +11,35 @@ import time
 
 def get_association_rules(_algorithm: Callable, _dataset: List, _taxonomy: Taxonomy,
                           min_sup: float = 3, min_conf: float = 0.6):
-    return _algorithm(_dataset, _taxonomy,min_sup, min_conf)
+    return _algorithm(_dataset, _taxonomy, min_sup, min_conf)
 
 
 if __name__ == '__main__':
     config = ConfigParser()
-    config.read('config/main.conf')
+    config.read('conf/main.conf')
+    data_mode = config['Main']['data_mode']
+    measure_time = True if config['Main']['measure_time'] == 'yes' else False
+    transactions_path = config['Data']['transactions']
+    taxonomy_path = config['Data']['taxonomy']
+    items_path = config['Data']['items']
 
     algorithms = [basic_ar, cumulate_ar]
 
-    if config['Main']['data_mode'] == 'pickle':
-        with open(config['Data']['taxonomy'], 'rb') as file:
+    if data_mode == 'pickle':
+        with open(taxonomy_path, 'rb') as file:
             taxonomy = pickle.load(file)
-        with open(config['Data']['transactions'], 'rb') as file:
+        with open(transactions_path, 'rb') as file:
             transactions = pickle.load(file)
-        with open(config['Data']['items'], 'rb') as file:
+        with open(items_path, 'rb') as file:
             item_list = pickle.load(file)
-    elif config['Main']['data_mode'] == 'txt':
-        item_list = read_item_list(config['Data']['items'])
-        taxonomy = read_taxonomy(config['Data']['taxonomy'], items=item_list)
-        transactions = read_transactions(config['Data']['transactions'], taxonomy=taxonomy)
+    elif data_mode == 'txt':
+        item_list = read_item_list(items_path)
+        taxonomy = read_taxonomy(taxonomy_path, items=item_list)
+        transactions = read_transactions(transactions_path, taxonomy=taxonomy)
     else:
         sys.exit(1)
 
-    if config['Main']['measure_time'] == 'yes':
+    if measure_time:
         for algorithm in algorithms:
             start = time.time()
             result = get_association_rules(_algorithm=algorithm, _dataset=transactions, _taxonomy=taxonomy)
@@ -43,10 +48,8 @@ if __name__ == '__main__':
             print(f'Algorithm: {algorithm.__name__}:')
             print(f'Elapsed time: {delta}')
             print(result)
-    elif config['Main']['measure_time'] == 'no':
+    else:
         for algorithm in algorithms:
             result = get_association_rules(_algorithm=algorithm, _dataset=transactions, _taxonomy=taxonomy)
             print(f'Algorithm: {algorithm.__name__}:')
             print(result)
-    else:
-        sys.exit(1)
