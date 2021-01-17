@@ -2,6 +2,7 @@ from utils.taxonomy import Taxonomy
 from typing import List
 from itertools import combinations
 from utils.alg_utils import get_frequent_1_set, generate_hash_tree, generate_k_subsets, is_prefix
+import time
 
 
 def frequent_itemsets_apriori(transactions: List, min_sup: float):
@@ -16,6 +17,9 @@ def frequent_itemsets_apriori(transactions: List, min_sup: float):
                 candidates.append(prev_freqent[i][:-1] + [prev_freqent[i][-1]] + [prev_freqent[j][-1]])
                 j += 1
 
+        print(candidates[0])
+        print(candidates)
+        time.sleep(5000)
         tree = generate_hash_tree(candidate_itemsets=candidates, length=length)
         k_subsets = generate_k_subsets(transactions=transactions, length=length)
 
@@ -37,7 +41,10 @@ def basic_ar(transactions: List, taxonomy: Taxonomy, min_interest: float, min_su
     transactions_w_ancestors = []
     for transaction in transactions:
         for item in transaction:
-            transaction.extend(taxonomy.get_ancestors(item))
+            ancestors = taxonomy.get_ancestors(item)
+            if ancestors:
+                ancestors = [item for item in ancestors if item]
+                transaction.extend(ancestors)
         new_transaction = list(set([item.node_id for item in transaction]))
         transactions_w_ancestors.append(new_transaction)
 

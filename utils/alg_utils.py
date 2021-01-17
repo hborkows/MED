@@ -7,7 +7,7 @@ def get_frequent_1_set(transactions: List, min_sup: float):
     candidate_1_set = {}
     for transaction in transactions:
         for item in transaction:
-            if item.node_id in candidate_1_set:
+            if item in candidate_1_set:
                 candidate_1_set[item] += 1
             else:
                 candidate_1_set[item] = 1

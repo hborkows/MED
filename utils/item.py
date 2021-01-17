@@ -1,6 +1,6 @@
 class Item:
-    def __init__(self, node_id: str, parent, desc: str = ''):
-        self.node_id: str = node_id
+    def __init__(self, node_id: int, parent, desc: str = ''):
+        self.node_id: int = node_id
         self.parent = parent
         self.desc: str = desc
         self.children: list = []

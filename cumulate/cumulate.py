@@ -3,8 +3,10 @@ from utils.taxonomy import Taxonomy
 from typing import List
 from itertools import combinations
 
+item_ancestors = {}
 
 def frequent_itemsets_apriori_cumulate(transactions: List, min_sup: float):
+    global item_ancestors
     # TODO add optimisations from article
     frequent_itemsets = get_frequent_1_set(transactions, min_sup)
     prev_freqent = [itemset[0] for itemset in frequent_itemsets]
@@ -16,6 +18,11 @@ def frequent_itemsets_apriori_cumulate(transactions: List, min_sup: float):
             while j < len(prev_freqent) and is_prefix(prev_freqent[i], prev_freqent[j]):
                 candidates.append(prev_freqent[i][:-1] + [prev_freqent[i][-1]] + [prev_freqent[j][-1]])
                 j += 1
+
+        # Optimization 3
+        if length == 2:
+            for candidate in candidates:
+                pass
 
         tree = generate_hash_tree(candidate_itemsets=candidates, length=length)
         k_subsets = generate_k_subsets(transactions=transactions, length=length)
@@ -34,10 +41,15 @@ def frequent_itemsets_apriori_cumulate(transactions: List, min_sup: float):
 
 
 def cumulate_ar(transactions: List, taxonomy: Taxonomy, min_interest: float, min_sup: float, min_conf: float):
+    global item_ancestors
     transactions_w_ancestors = []
     for transaction in transactions:
         for item in transaction:
-            transaction.extend(taxonomy.get_ancestors(item))
+            ancestors = taxonomy.get_ancestors(item)
+            if ancestors:
+                ancestors = [item for item in ancestors if item]
+                item_ancestors[item.node_id] = ancestors  # Optimization #2 -> pre-computing ancestors
+                transaction.extend(ancestors)
         new_transaction = list(set([item.node_id for item in transaction]))
         transactions_w_ancestors.append(new_transaction)
 

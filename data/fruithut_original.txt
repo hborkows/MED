@@ -1,4 +1,3 @@
-@CONVERTED_FROM_TEXT
 @ITEM=9188=Rampe Leaves Dried 50g
 @ITEM=9189=Basil Seed 100g(casa casa)
 @ITEM=9182=Bread Crumbs 500g

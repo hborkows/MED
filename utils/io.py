@@ -36,6 +36,7 @@ def read_transactions(path: str, taxonomy: Taxonomy) -> list:
         item_ids = line[:-1].split(' ')
         transaction = []
         for node_id in item_ids:
+            node_id = int(node_id)
             transaction.append(taxonomy.find_node(node_id=node_id))
         transactions.append(transaction)
 
