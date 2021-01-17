@@ -5,6 +5,7 @@ from itertools import combinations
 
 item_ancestors = {}
 
+
 def frequent_itemsets_apriori_cumulate(transactions: List, min_sup: float):
     global item_ancestors
     # TODO add optimisations from article
@@ -45,7 +46,7 @@ def frequent_itemsets_apriori_cumulate(transactions: List, min_sup: float):
     return frequent_itemsets
 
 
-def cumulate_ar(transactions: List, taxonomy: Taxonomy, min_interest: float, min_sup: float, min_conf: float):
+def cumulate_ar(transactions: List, taxonomy: Taxonomy, min_sup: float, min_conf: float):
     global item_ancestors
     transactions_w_ancestors = []
     for transaction in transactions:

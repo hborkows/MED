@@ -36,7 +36,7 @@ def frequent_itemsets_apriori(transactions: List, min_sup: float):
     return frequent_itemsets
 
 
-def basic_ar(transactions: List, taxonomy: Taxonomy, min_interest: float, min_sup: float, min_conf: float):
+def basic_ar(transactions: List, taxonomy: Taxonomy, min_sup: float, min_conf: float):
     # Add ancestors from taxonomy to transactions
     transactions_w_ancestors = []
     for transaction in transactions:
