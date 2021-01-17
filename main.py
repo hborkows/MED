@@ -20,21 +20,21 @@ if __name__ == '__main__':
 
     algorithms = [basic_ar, cumulate_ar]
 
-    if config['data_mode'] == 'pickle':
-        with open('data/taxonomy.pickle', 'rb') as file:
+    if config['Main']['data_mode'] == 'pickle':
+        with open(config['Data']['taxonomy'], 'rb') as file:
             taxonomy = pickle.load(file)
-        with open('data/transactions.pickle', 'rb') as file:
+        with open(config['Data']['transactions'], 'rb') as file:
             transactions = pickle.load(file)
-        with open('data/items.pickle', 'rb') as file:
+        with open(config['Data']['items'], 'rb') as file:
             item_list = pickle.load(file)
-    elif config['data_mode'] == 'txt':
-        item_list = read_item_list('data/fruithut_original.txt')
-        taxonomy = read_taxonomy('data/fruithut_taxonomy.txt', items=item_list)
-        transactions = read_transactions('data/fruithut_original.txt', taxonomy=taxonomy)
+    elif config['Main']['data_mode'] == 'txt':
+        item_list = read_item_list(config['Data']['items'])
+        taxonomy = read_taxonomy(config['Data']['taxonomy'], items=item_list)
+        transactions = read_transactions(config['Data']['transactions'], taxonomy=taxonomy)
     else:
         sys.exit(1)
 
-    if config['measure_time'] == 'yes':
+    if config['Main']['measure_time'] == 'yes':
         for algorithm in algorithms:
             start = time.time()
             result = get_association_rules(_algorithm=algorithm, _dataset=transactions, _taxonomy=taxonomy)
@@ -43,7 +43,7 @@ if __name__ == '__main__':
             print(f'Algorithm: {algorithm.__name__}:')
             print(f'Elapsed time: {delta}')
             print(result)
-    elif config['measure_time'] == 'no':
+    elif config['Main']['measure_time'] == 'no':
         for algorithm in algorithms:
             result = get_association_rules(_algorithm=algorithm, _dataset=transactions, _taxonomy=taxonomy)
             print(f'Algorithm: {algorithm.__name__}:')
