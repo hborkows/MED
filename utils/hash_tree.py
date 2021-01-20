@@ -14,7 +14,7 @@ class HashTree:
     def _insert_r(self, node: Node, itemset: tuple, index: int, count: int):
         # last bucket
         if index == len(itemset):
-            if itemset in node.bucket:
+            if itemset in node.bucket.keys():
                 node.bucket[itemset] += count
             else:
                 node.bucket[itemset] = count
@@ -22,10 +22,10 @@ class HashTree:
 
         # leaf node -> insert into bucket or transform into non-leaf for more space
         if node.is_leaf:
-            if itemset in node.bucket:
+            if itemset in node.bucket.keys():
                 node.bucket[itemset] += count
             else:
-                node.bucket[itemset] += count
+                node.bucket[itemset] = count
 
             # no space left in leaf -> transform into non-leaf node
             if len(node.bucket) >= self._leaf_capacity:
@@ -54,9 +54,10 @@ class HashTree:
     def add_support(self, itemset):
         current_node = self._root
         index = 0
+        itemset = tuple(itemset)
         while True:
             if current_node.is_leaf:
-                if itemset in current_node.bucket:
+                if itemset in current_node.bucket.keys():
                     current_node.bucket[itemset] += 1
                 break
             hash_key = self.hash_value(itemset[index])
@@ -67,14 +68,17 @@ class HashTree:
             index += 1
 
     def _dfs(self, node: Node, min_sup: float):
+        # print(f"Node: {node}")
         if node.is_leaf:
+            result = []
             for key, value in node.bucket.items():
                 if value >= min_sup:
-                    return key, value
+                    result.append((key, value))
+            return result
         else:
             result = []
-            for child in node.children.keys():
-                result.append(self._dfs(child, min_sup))
+            for key, child in node.children.items():
+                result.extend(self._dfs(child, min_sup))
             return result
 
     def get_frequent_itemsets(self, min_sup: float):

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Tuple
 from itertools import combinations
 from utils.hash_tree import HashTree
 
@@ -15,18 +15,44 @@ def get_frequent_1_set(transactions: List, min_sup: float):
     result = []
     for key, count in candidate_1_set.items():
         if count >= (min_sup * len(transactions) / 100):
-            result.append(([key], count))
+            result.append((tuple([key]), count))
     return result
 
 
-def generate_k_subsets(transactions: List, length: int):
+def generate_k_subsets(transactions: List, prev_frequent: List, length: int):
     result = []
     for itemset in transactions:
-        result.extend(map(list, combinations(itemset, length)))
+        combs = map(list, combinations(itemset, length))
+        result.extend(combs)
+    '''i = 0
+    for itemset in transactions:
+        for freq in prev_frequent:
+            freq = list(freq)
+            if set(freq).issubset(set(itemset)):
+                print(f'Adding combs {i}')
+                i += 1
+                combs = map(list, combinations(itemset, length))
+                result.extend(combs)
+                continue'''
+
     return result
 
 
-def generate_hash_tree(candidate_itemsets, length, max_leaf_count=4, max_child_count=5):
+def prune(candidateSet, prevFreqSet, length):
+    tempCandidateSet = candidateSet.copy()
+    for item in candidateSet:
+        subsets = combinations(item, length)
+        for subset in subsets:
+            # if the subset is not in previous K-frequent get, then remove the set
+            if frozenset(subset) not in prevFreqSet:
+                tempCandidateSet.remove(item)
+                print(f'removing: {item}')
+                del item
+                break
+    return tempCandidateSet
+
+
+def generate_hash_tree(candidate_itemsets, length, max_leaf_count=20, max_child_count=20):
     tree = HashTree(itemset_size=max_leaf_count, leaf_capacity=max_child_count)
     for itemset in candidate_itemsets:
         tree.insert(itemset)
